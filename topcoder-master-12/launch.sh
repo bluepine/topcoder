@@ -1,0 +1,1 @@
+javaws bin/ContestAppletProd.jnlp &

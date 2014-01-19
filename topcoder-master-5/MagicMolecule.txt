@@ -1,0 +1,74 @@
+PROBLEM STATEMENT
+Fox Ciel is learning magical physics. Currently, she studies Magic Molecules. Each Magic Molecule consists of some Magic Atoms. Each Magic Atom stores some Magic Power, with different atoms possibly storing different amounts of power. Within the molecule, some pairs of atoms are connected by bidirectional Magic Bonds.
+
+Ciel now has a Magic Molecule formed by n Magic Atoms. The atoms are numbered 0 through n-1, inclusive. You are given a vector <int> magicPower with n elements: For each i, the amount of power stored in the Magic Atom number i is magicPower[i]. You are also given a vector <string> magicBond with n elements, each containing n characters.
+Character j of element i of magicBond is 'Y' if the Magic Atoms i and j are connected by a Magic Bond. Otherwise, character j of element i of magicBond is 'N'.
+
+Your task is to improve Ciel's Magic Molecule. You have to choose a subset of the n Magic Atoms so that the following two conditions are met:
+
+The number m of chosen atoms satisfies the inequality 3*m >= 2*n.
+Each of the m*(m-1)/2 pairs of chosen atoms is connected by a Magic Bond.
+
+Your goal is to maximize the total Magic Power stored in the chosen atoms. Compute and return the maximum total amount of power. If it is impossible to choose a subset of atoms that satisfies the above criteria, return -1 instead.
+
+DEFINITION
+Class:MagicMolecule
+Method:maxMagicPower
+Parameters:vector <int>, vector <string>
+Returns:int
+Method signature:int maxMagicPower(vector <int> magicPower, vector <string> magicBond)
+
+
+NOTES
+-The chosen subset is allowed to contain all n Magic Atoms.
+-You are not supposed to maximize m; only the total amount of Magic Power matters.
+
+
+CONSTRAINTS
+-magicPower will contain between 2 and 50 elements, inclusive.
+-Each element in magicPower will be between 1 and 100,000, inclusive.
+-magicBond and magicPower will contain the same number of elements.
+-Each element of magicBound will contain exactly n characters, where n is the number of elements in magicPower.
+-Each element of magicBound will only contain the characters 'Y' and 'N'.
+-For each valid i, magicBound[i][i] will be 'N'.
+-For each valid i and j, magicBound[i][j] will be equal to magicBound[j][i].
+
+
+EXAMPLES
+
+0)
+{1,2,3}
+{"NYY","YNN","YNN"}
+
+Returns: 4
+
+There are three Magic Atoms.
+There are two Magic Bonds: one connects atoms 0 and 1, the other connects atoms 0 and 2.
+The first condition requires us to choose at least 2*3/3 = 2 atoms.
+We cannot choose all three of them, because atoms 1 and 2 are not connected by a Magic Bond.
+The optimal solution is to choose Magic Atoms 0 and 2.
+Their total power is 1+3 = 4.
+
+1)
+{1,1,1,1}
+{"NNYY","NNYY","YYNN","YYNN"}
+
+Returns: -1
+
+This time we must choose at least 3 Magic Atoms, but there is no valid solution.
+
+2)
+{86,15,100,93,53,50}
+{"NYYYYN","YNNNNY","YNNYYN","YNYNYN","YNYYNY","NYNNYN"}
+
+Returns: 332
+
+
+
+3)
+{3969,9430,7242,8549,8190,8368,3704,9740,1691}
+{"NYYYYYYYY","YNYYYYYYY","YYNYYYYYY","YYYNYYYYY","YYYYNYYYY","YYYYYNYYY","YYYYYYNNY","YYYYYYNNY","YYYYYYYYN"}
+
+Returns: 57179
+
+

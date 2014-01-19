@@ -1,0 +1,475 @@
+#include <vector>
+#include <list>
+#include <map>
+#include <set>
+#include <queue>
+#include <deque>
+#include <stack>
+#include <bitset>
+#include <algorithm>
+#include <functional>
+#include <numeric>
+#include <utility>
+#include <sstream>
+#include <iostream>
+#include <iomanip>
+#include <cstdio>
+#include <cmath>
+#include <cstdlib>
+#include <ctime>
+#include <climits>
+
+using namespace std;
+
+typedef vector<string> VS;
+typedef vector<int> VI;
+typedef vector<VI > VVI;
+
+VVI a;
+VVI b;
+VVI c;
+
+class MatArith {
+public:
+	VS calculate(VS A, VS B, VS C, string equation) {
+		a = parse(A);
+        b = parse(B);
+        c = parse(C);
+        VVI r;
+        string e = tran(equation);
+        if (!calc(e, r))
+            return VS();
+        return print(r);
+	}
+
+    VVI parse(VS M) {
+        VVI m;
+        for (int i = 0; i < (int)M.size(); i++) {
+            m.push_back(VI());
+            istringstream is(M[i]);
+            int n;
+            while (is >> n) {
+                m[i].push_back(n);
+            }
+        }
+        return m;
+    }
+
+    VS print(VVI & m) {
+        VS M;
+        for (int i = 0; i < (int)m.size(); i++) {
+            M.push_back("");
+            for (int j = 0; j < (int)m[i].size(); j++) {
+                ostringstream os;
+                os << m[i][j];
+                if (j == 0) M[i] += os.str();
+                else M[i] += (" " + os.str()); 
+            }
+        }
+        //for (int i = 0; i < (int)M.size(); i++)
+            //cout << M[i] << endl;
+        return M;
+    }
+    
+    bool add(VVI & x, VVI & y, VVI & z) {
+        int mx = x.size();
+        int my = y.size();
+        if (mx == 0 || my == 0) return false;
+        int nx = x[0].size();
+        int ny = y[0].size();
+        if (nx == 0 || ny == 0) return false;
+        //cout << "mx: " << mx << endl;
+        //cout << "my: " << my << endl;
+        //cout << "nx: " << nx << endl;
+        //cout << "ny: " << ny << endl;
+        if (mx != my || nx != ny) return false;
+        z.clear();
+        for (int i = 0; i < mx; i++) {
+            z.push_back(VI(nx, 0));
+            for (int j = 0; j < nx; j++) {
+                double tmp = (double)x[i][j] + (double)y[i][j];
+                if (tmp > INT_MAX || tmp < INT_MIN) return false;
+                z[i][j] = (int)tmp;
+            }
+        }
+        return true;
+    }
+    
+    bool multi(VVI & x, VVI & y, VVI & z) {
+        int mx = x.size();
+        int my = y.size();
+        if (mx == 0 || my == 0) return false;
+        int nx = x[0].size();
+        int ny = y[0].size();
+        if (nx == 0 || ny == 0) return false;
+        //cout << "mx: " << mx << endl;
+        //cout << "my: " << my << endl;
+        //cout << "nx: " << nx << endl;
+        //cout << "ny: " << ny << endl;
+        if (nx != my) return false;
+       
+        z.clear();
+        for (int i = 0; i < mx; i++) {
+            z.push_back(VI(ny, 0));
+            for (int j = 0; j < ny; j++) {
+                double sum = 0;
+                for (int k = 0; k < my; k++) {
+                    sum += (double)x[i][k] * (double)y[k][j];
+                }
+
+                if (sum > INT_MAX || sum < INT_MIN) return false;
+                z[i][j] = (int)sum;
+            }
+        }
+        return true;
+    }
+    
+    string tran(string & e) {
+        string s = "";
+        stack<char> stk;
+        for (int i = (int)e.size()-1; i >= 0; i--) {
+            if (e[i] == '+' || e[i] == '*') {
+                while (!stk.empty() && (stk.top() == '*') && (e[i] == '+')) {
+                    s.push_back(stk.top());
+                    stk.pop();
+                }
+                stk.push(e[i]);
+            }
+            else {
+                s.push_back(e[i]);
+            }
+        }
+        while (!stk.empty()) {
+            s.push_back(stk.top());
+            stk.pop();
+        }
+        //cout << "tran: " << s << endl;
+        return s;
+    }
+
+    bool calc(string & e, VVI & r) {  
+        stack<VVI> stk1;
+        for (int i = 0; i < (int)e.size(); i++) {
+            //cout << "e: " << e[i] << endl;
+            if (e[i] == 'A')
+                stk1.push(a);
+            else if (e[i] == 'B')
+                stk1.push(b);
+            else if (e[i] == 'C')
+                stk1.push(c);
+            else if (e[i] == '+') {
+                VVI num1 = stk1.top(); stk1.pop();
+                VVI num2 = stk1.top(); stk1.pop();
+                if (!add(num1, num2, r)) 
+                    return false;
+                stk1.push(r);
+            }
+            else if (e[i] == '*') {
+                VVI num1 = stk1.top(); stk1.pop();
+                VVI num2 = stk1.top(); stk1.pop();
+                if (!multi(num1, num2, r))
+                    return false;
+                stk1.push(r);
+                //cout << "r: " << r[0][0] << endl;
+            }
+        }
+
+        r = stk1.top();
+        return true;
+    }
+};
+
+
+// BEGIN KAWIGIEDIT TESTING
+// Generated by KawigiEdit 2.1.8 (beta) modified by pivanof
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+bool KawigiEdit_RunTest(int testNum, vector <string> p0, vector <string> p1, vector <string> p2, string p3, bool hasAnswer, vector <string> p4) {
+    cout << "Test " << testNum << ": [" << "{";
+    for (int i = 0; int(p0.size()) > i; ++i) {
+        if (i > 0) {
+            cout << ",";
+        }
+        cout << "\"" << p0[i] << "\"";
+    }
+    cout << "}" << "," << "{";
+    for (int i = 0; int(p1.size()) > i; ++i) {
+        if (i > 0) {
+            cout << ",";
+        }
+        cout << "\"" << p1[i] << "\"";
+    }
+    cout << "}" << "," << "{";
+    for (int i = 0; int(p2.size()) > i; ++i) {
+        if (i > 0) {
+            cout << ",";
+        }
+        cout << "\"" << p2[i] << "\"";
+    }
+    cout << "}" << "," << "\"" << p3 << "\"";
+    cout << "]" << endl;
+    MatArith *obj;
+    vector <string> answer;
+    obj = new MatArith();
+    clock_t startTime = clock();
+    answer = obj->calculate(p0, p1, p2, p3);
+    clock_t endTime = clock();
+    delete obj;
+    bool res;
+    res = true;
+    cout << "Time: " << double(endTime - startTime) / CLOCKS_PER_SEC << " seconds" << endl;
+    if (hasAnswer) {
+        cout << "Desired answer:" << endl;
+        cout << "\t" << "{";
+        for (int i = 0; int(p4.size()) > i; ++i) {
+            if (i > 0) {
+                cout << ",";
+            }
+            cout << "\"" << p4[i] << "\"";
+        }
+        cout << "}" << endl;
+    }
+    cout << "Your answer:" << endl;
+    cout << "\t" << "{";
+    for (int i = 0; int(answer.size()) > i; ++i) {
+        if (i > 0) {
+            cout << ",";
+        }
+        cout << "\"" << answer[i] << "\"";
+    }
+    cout << "}" << endl;
+    if (hasAnswer) {
+        if (answer.size() != p4.size()) {
+            res = false;
+        } else {
+            for (int i = 0; int(answer.size()) > i; ++i) {
+                if (answer[i] != p4[i]) {
+                    res = false;
+                }
+            }
+        }
+    }
+    if (!res) {
+        cout << "DOESN'T MATCH!!!!" << endl;
+    } else if (double(endTime - startTime) / CLOCKS_PER_SEC >= 2) {
+        cout << "FAIL the timeout" << endl;
+        res = false;
+    } else if (hasAnswer) {
+        cout << "Match :-)" << endl;
+    } else {
+        cout << "OK, but is it right?" << endl;
+    }
+    cout << "" << endl;
+    return res;
+}
+int main() {
+    bool all_right;
+    all_right = true;
+
+    vector <string> p0;
+    vector <string> p1;
+    vector <string> p2;
+    string p3;
+    vector <string> p4;
+
+    {
+        // ----- test 0 -----
+        string t0[] = {"1 2 3","2 3 4"};
+        p0.assign(t0, t0 + sizeof(t0) / sizeof(t0[0]));
+        string t1[] = {"1 2","3 4","5 6"};
+        p1.assign(t1, t1 + sizeof(t1) / sizeof(t1[0]));
+        string t2[] = {"1"};
+        p2.assign(t2, t2 + sizeof(t2) / sizeof(t2[0]));
+        p3 = "A*B";
+        string t4[] = {"22 28","31 40"};
+        p4.assign(t4, t4 + sizeof(t4) / sizeof(t4[0]));
+        all_right = KawigiEdit_RunTest(0, p0, p1, p2, p3, true, p4) && all_right;
+        // ------------------
+    }
+
+    {
+        // ----- test 1 -----
+        string t0[] = {"1 2 3","2 3 4"};
+        p0.assign(t0, t0 + sizeof(t0) / sizeof(t0[0]));
+        string t1[] = {"1 2","3 4","5 6"};
+        p1.assign(t1, t1 + sizeof(t1) / sizeof(t1[0]));
+        string t2[] = {"1"};
+        p2.assign(t2, t2 + sizeof(t2) / sizeof(t2[0]));
+        p3 = "A+B+C";
+        p4.clear() /*{}*/;
+        all_right = KawigiEdit_RunTest(1, p0, p1, p2, p3, true, p4) && all_right;
+        // ------------------
+    }
+
+    {
+        // ----- test 2 -----
+        string t0[] = {"3 5 7","5 4 3","-2 3 2"};
+        p0.assign(t0, t0 + sizeof(t0) / sizeof(t0[0]));
+        string t1[] = {"3"};
+        p1.assign(t1, t1 + sizeof(t1) / sizeof(t1[0]));
+        string t2[] = {"1 1 1","2 5 2","3 5 -3"};
+        p2.assign(t2, t2 + sizeof(t2) / sizeof(t2[0]));
+        p3 = "A+C";
+        string t4[] = {"4 6 8","7 9 5","1 8 -1"};
+        p4.assign(t4, t4 + sizeof(t4) / sizeof(t4[0]));
+        all_right = KawigiEdit_RunTest(2, p0, p1, p2, p3, true, p4) && all_right;
+        // ------------------
+    }
+
+    {
+        // ----- test 3 -----
+        string t0[] = {"10 0","0 0"};
+        p0.assign(t0, t0 + sizeof(t0) / sizeof(t0[0]));
+        string t1[] = {"0"};
+        p1.assign(t1, t1 + sizeof(t1) / sizeof(t1[0]));
+        string t2[] = {"0"};
+        p2.assign(t2, t2 + sizeof(t2) / sizeof(t2[0]));
+        p3 = "A*A*A*A*A*A*A*A*A";
+        string t4[] = {"1000000000 0","0 0"};
+        p4.assign(t4, t4 + sizeof(t4) / sizeof(t4[0]));
+        all_right = KawigiEdit_RunTest(3, p0, p1, p2, p3, true, p4) && all_right;
+        // ------------------
+    }
+
+    {
+        // ----- test 4 -----
+        string t0[] = {"10 0","0 0"};
+        p0.assign(t0, t0 + sizeof(t0) / sizeof(t0[0]));
+        string t1[] = {"0"};
+        p1.assign(t1, t1 + sizeof(t1) / sizeof(t1[0]));
+        string t2[] = {"0"};
+        p2.assign(t2, t2 + sizeof(t2) / sizeof(t2[0]));
+        p3 = "A*A*A*A*A*A*A*A*A*A";
+        p4.clear() /*{}*/;
+        all_right = KawigiEdit_RunTest(4, p0, p1, p2, p3, true, p4) && all_right;
+        // ------------------
+    }
+
+    {
+        // ----- test 5 -----
+        string t0[] = {"-4 5 -9", "2 -7 8", "4 -8 -5", "10 6 -4"};
+        p0.assign(t0, t0 + sizeof(t0) / sizeof(t0[0]));
+        string t1[] = {"7 -2 0 -3 -4", "3 -5 6 6 1", "-6 6 2 -3 -6"};
+        p1.assign(t1, t1 + sizeof(t1) / sizeof(t1[0]));
+        string t2[] = {"2 -8 6 0 3", "0 6 -6 0 0", "6 4 8 -4 0", "5 -9 -7 0 -6"};
+        p2.assign(t2, t2 + sizeof(t2) / sizeof(t2[0]));
+        p3 = "A*B+C";
+        string t4[] = {"43 -79 18 69 78", "-55 85 -32 -72 -63", "40 6 -50 -49 6", "117 -83 21 18 -16"};
+        p4.assign(t4, t4 + sizeof(t4) / sizeof(t4[0]));
+        all_right = KawigiEdit_RunTest(5, p0, p1, p2, p3, true, p4) && all_right;
+        // ------------------
+    }
+    
+    {
+        // ----- test 6 -----
+        string t0[] = {"10"};
+        p0.assign(t0, t0 + sizeof(t0) / sizeof(t0[0]));
+        string t1[] = {"9"};
+        p1.assign(t1, t1 + sizeof(t1) / sizeof(t1[0]));
+        string t2[] = {"-8"};
+        p2.assign(t2, t2 + sizeof(t2) / sizeof(t2[0]));
+        p3 = "A*B*C*A*B*C*A*B*C*A";
+        p4.clear();
+        all_right = KawigiEdit_RunTest(6, p0, p1, p2, p3, true, p4) && all_right;
+        // ------------------
+    }
+    
+    {
+        // ----- test 7 -----
+        string t0[] = {"-1"};
+        p0.assign(t0, t0 + sizeof(t0) / sizeof(t0[0]));
+        string t1[] = {"2"};
+        p1.assign(t1, t1 + sizeof(t1) / sizeof(t1[0]));
+        string t2[] = {"8"};
+        p2.assign(t2, t2 + sizeof(t2) / sizeof(t2[0]));
+        p3 = "C*C*C*C*C*C*C*C*C*C*A+A*C*C*C*C*C*C*C*C*C*C+A";
+        p4.clear();
+        all_right = KawigiEdit_RunTest(7, p0, p1, p2, p3, true, p4) && all_right;
+        // ------------------
+    }
+    
+    {
+        // ----- test 8 -----
+        string t0[] = {"4"};
+        p0.assign(t0, t0 + sizeof(t0) / sizeof(t0[0]));
+        string t1[] = {"9"};
+        p1.assign(t1, t1 + sizeof(t1) / sizeof(t1[0]));
+        string t2[] = {"1"};
+        p2.assign(t2, t2 + sizeof(t2) / sizeof(t2[0]));
+        p3 = "B";
+        string t4[] = {"9"};
+        p4.assign(t4, t4 + sizeof(t4) / sizeof(t4[0]));
+        all_right = KawigiEdit_RunTest(8, p0, p1, p2, p3, true, p4) && all_right;
+        // ------------------
+    }
+    
+    {
+        // ----- test 9 -----
+        string t0[] = {"8"};
+        p0.assign(t0, t0 + sizeof(t0) / sizeof(t0[0]));
+        string t1[] = {"2"};
+        p1.assign(t1, t1 + sizeof(t1) / sizeof(t1[0]));
+        string t2[] = {"-1"};
+        p2.assign(t2, t2 + sizeof(t2) / sizeof(t2[0]));
+        p3 = "C*B*A*A*A*A*A*A*A*A*A*A";
+        string t4[] = {"-2147483648"};
+        p4.assign(t4, t4 + sizeof(t4) / sizeof(t4[0]));
+        all_right = KawigiEdit_RunTest(9, p0, p1, p2, p3, true, p4) && all_right;
+        // ------------------
+    }
+
+    {
+        // ----- test 10 -----
+        string t0[] = {"8"};
+        p0.assign(t0, t0 + sizeof(t0) / sizeof(t0[0]));
+        string t1[] = {"8"};
+        p1.assign(t1, t1 + sizeof(t1) / sizeof(t1[0]));
+        string t2[] = {"8"};
+        p2.assign(t2, t2 + sizeof(t2) / sizeof(t2[0]));
+        p3 = "A*A*A*A*A*A*A*A*A*A*A*A*A*A*A*A*A*A*A*A*A*A*A*A";
+        p4.clear();
+        all_right = KawigiEdit_RunTest(10, p0, p1, p2, p3, true, p4) && all_right;
+        // ------------------
+    }
+
+    {
+        // ----- test 11 -----
+        string t0[] = {"8"};
+        p0.assign(t0, t0 + sizeof(t0) / sizeof(t0[0]));
+        string t1[] = {"2"};
+        p1.assign(t1, t1 + sizeof(t1) / sizeof(t1[0]));
+        string t2[] = {"-1"};
+        p2.assign(t2, t2 + sizeof(t2) / sizeof(t2[0]));
+        p3 = "A*A*A*A*A*A*A*A*A*A*B*C";
+        p4.clear();
+        all_right = KawigiEdit_RunTest(11, p0, p1, p2, p3, true, p4) && all_right;
+        // ------------------
+    }
+
+    {
+        // ----- test 12 -----
+        string t0[] = {"2 2"};
+        p0.assign(t0, t0 + sizeof(t0) / sizeof(t0[0]));
+        string t1[] = {"2", "-2"};
+        p1.assign(t1, t1 + sizeof(t1) / sizeof(t1[0]));
+        string t2[] = {"10"};
+        p2.assign(t2, t2 + sizeof(t2) / sizeof(t2[0]));
+        p3 = "C*C*C*C*C*C*C*C*C*A*B";
+        string t4[] = {"0"};
+        p4.assign(t4, t4 + sizeof(t4) / sizeof(t4[0]));
+        all_right = KawigiEdit_RunTest(12, p0, p1, p2, p3, true, p4) && all_right;
+        // ------------------
+    }
+
+
+    if (all_right) {
+        cout << "You're a stud (at least on the example cases)!" << endl;
+    } else {
+        cout << "Some of the test cases had errors." << endl;
+    }
+    return 0;
+}
+// END KAWIGIEDIT TESTING
+//Powered by KawigiEdit 2.1.8 (beta) modified by pivanof!
