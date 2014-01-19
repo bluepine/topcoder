@@ -35,6 +35,7 @@ void dump_input(int input[50], int L, int T){
 int input[50];
 int L;
 double prob(int T, int start, int end){
+  printf("%d, %d, %d\n", T, start, end);
   int i;
   double r = 0;
   if(start >= 0){

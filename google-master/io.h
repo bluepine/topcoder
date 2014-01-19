@@ -1,0 +1,11 @@
+
+int ReadFile(char *filename);
+
+
+
+
+
+
+
+
+

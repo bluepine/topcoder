@@ -1,0 +1,7 @@
+FoxListeningToMusic.c:45:8: warning: add explicit braces to avoid dangling else [-Wdangling-else]
+      }else{
+       ^
+1 warning generated.
+58 47 36 25 14 3 
+100
+{0.328958, 0.262915, 0.184639, 0.131230, 0.075186, 0.017071 }

@@ -1,0 +1,15 @@
+Problems completed during QUT Advanced Algorithms unit INB365.
+Demonstrate a number of techinques including:
+- Dynamic Programming
+- Graph Traversal Algorithms
+- Shortest Path Algorithms
+- Convex Hull
+- Line Intersection
+- String Matching
+- Maximum Flow 
+- Min Cost Max Flow
+- Edit Distance
+- Stable Marriage
+
+and more. They accept console based text input and output results to the console. 
+Various problem statements are available in the solution. 

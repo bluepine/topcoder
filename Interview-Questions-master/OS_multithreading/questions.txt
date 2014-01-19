@@ -1,0 +1,332 @@
+===============================================================================
+► What is difference between _exit and exit and system call?
+Sol:
+You should use _exit (or its synonym _Exit) to abort the child 
+program when the exec fails, because in this situation, the child 
+process may interfere with the parent process' external data 
+(files) by calling its atexit handlers, calling its signal 
+handlers, and/or flushing buffers.
+
+For the same reason, you should also use _exit in any child 
+process that does not do an exec, but those are rare.
+
+In all other cases, just use exit. As you partially noted yourself, 
+every process in Unix/Linux (except one, init) is the child of 
+another process, so using _exit in every child process would mean 
+that exit is useless outside of init.
+
+switch (fork()) {
+  case 0:
+    // we're the child
+    execlp("some", "program", NULL);
+    _exit(1);  // <-- HERE
+  case -1:
+    // error, no fork done ...
+  default:
+    // we're the parent ...
+}
+
+The functions exit and _exit are equivalent except that exit calls 
+functions registered by atexit and flushes standard I/O buffers 
+while _exit does not.
+
+===============================================================================
+► Write a long running program in C. This program should not 
+hog the CPU, use no sleep()/block()/select()/wait(), should not 
+block resources...and should terminate after a very very very 
+long time.
+Sol: 
+    Set thread priority to lowest possible value (still settable 
+in user space) and have a while loop that increments a large 
+integer and exits when integer gets big enough. This doesn't hog 
+the CPU from other running processes and never blocks. It's 
+depedent on OS scheduling and system load, though. 
+===============================================================================
+► Given two linked lists, which are intersecting some where 
+the shape can be L,Y or I, how will you find the intersection 
+point?What will be time complexity.Assuming worst case how 
+will you reduce the complexity.After having attempted 
+this how will you convert above structure into X?
+
+===============================================================================
+► Differenced between fork(),pthread() system calls.What is vfork().
+What is a file system how does kernel stores the data structure 
+with respect to file system,he hinted to super blocks I was not much 
+aware of super blocks etc in a file system,then I attempted for 
+VFS kind of thing.
+Sol:
+The vfork() function has the same effect as fork(2), except that 
+the behavior is undefined if the process created by vfork() either 
+modifies any data other than a variable of type pid_t used to store 
+the return value from vfork(), or returns from the function in which 
+vfork() was called, or calls any other function before successfully 
+calling _exit(2) or one of the exec(3) family of functions.
+    
+===============================================================================
+►What is the difference between spin lock, mutex,semaphore.
+I was clear on this answer but then he asked for a real 
+example of mutex.
+
+I answered for busy waiting condition in spin lock,mutex 
+there is no context switch.Then he said about pthread_mutex() 
+call defined for using a mutex.Another program in which 
+you do a fork and have a child process where are you 
+going to use pthread_mutex in parent or in child.
+What is the difference between parent and child process?
+Sol:
+First say that what you are telling is about the POSIX 
+semaphores and not the system v semaphore.
+and pthread mutex.
+
+a) semaphore is basically a synchronization primitive 
+   but mutex is a locking primitive
+b) a semaphore can be a mutex but a mutex cannot be 
+   a semaphore
+c) semaphore can be signalled by any of the thread by 
+   using sem_post() but a mutex can be unlocked only 
+   by the thread which owns it.
+d) semaphores can be used between threads of different 
+   processes but mutex work between threads of the 
+   same process or between related process.
+e) semaphores are system wide and remain in the form of 
+   files on the filesystem until cleaned but mutexes are 
+   process-wide.
+
+ Spinlocks are locks used in the kernel code where we know 
+ the code fragment which acquires and releases the lock is 
+ deterministic. They continuously poll to know the status 
+ of the lock. Busy sleep.
+
+===============================================================================
+► What is the mechanism for open(),read(),write() system calls how 
+does the kernel implements them and what happens when a user space 
+program uses open(file,r) like this with arguments,how does kernel 
+implement it.
+Sol:
+http://www.linux.it/~rubini/docs/ksys/
+http://people.ee.ethz.ch/~arkeller/linux/kernel_user_space_howto.html
+
+
+
+
+===============================================================================
+► What is difference between threads and Process/
+Sol:
+Process:
+========
+1. An executing instance of a program is called a process.
+2. Some operating systems use the term ‘task‘ to refer to a program that is 
+   being executed.
+3. A process is always stored in the main memory also termed as the primary 
+   memory or random access memory.
+4. Therefore, a process is termed as an active entity. It disappears if the 
+   machine is rebooted.
+5. Several process may be associated with a same program.
+6. On a multiprocessor system, multiple processes can be executed in parallel.
+7. On a uni-processor system, though true parallelism is not achieved, a 
+   process scheduling algorithm is applied and the processor is scheduled 
+   to execute each process one at a time yielding an illusion of concurrency.
+8. Example: Executing multiple instances of the ‘Calculator’ program. Each 
+   of the instances are termed as a process.
+
+Thread:
+=======
+1. A thread is a subset of the process.
+2. It is termed as a ‘lightweight process’, since it is similar to a real 
+   process but executes within the context of a process and shares the 
+   same resources allotted to the process by the kernel. 
+3. Usually, a process has only one thread of control – one set of machine 
+   instructions executing at a time.
+4. A process may also be made up of multiple threads of execution that 
+   execute instructions concurrently.
+5. Multiple threads of control can exploit the true parallelism possible 
+   on multiprocessor systems.
+6. On a uni-processor system, a thread scheduling algorithm is applied and 
+   the processor is scheduled to run each thread one at a time.
+7. All the threads running within a process share the same address space, 
+   file descriptor, stack and other process related attributes.
+8. Since the threads of a process share the same memory, synchronizing the 
+   access to the shared data withing the process gains unprecedented 
+   importance.
+
+===============================================================================
+► What is priority inversion? What is its solution?
+Sol:
+Imagine three (3) tasks of different priority: tLow, tMed and tHigh. 
+tLow and tHigh access the same critical resource at different times; 
+tMed does its own thing.
+
+1. tLow is running, tMed and tHigh are presently blocked (but not 
+   in critical section).
+2. tLow comes along and enters the critical section.
+3. tHigh unblocks and since it is the highest priority task in the 
+   system, it runs.
+4. tHigh then attempts to enter the critical resource but blocks as 
+   tLow is in there.
+5. tMed unblocks and since it is now the highest priority task in 
+   the system, it runs.
+
+tHigh can not run until tLow gives up the resource. tLow can not 
+run until tMed blocks or ends. The priority of the tasks has been 
+inverted; tHigh though it has the highest priority is at the 
+bottom of the execution chain.
+
+To "solve" priority inversion, the priority of tLow must be bumped 
+up to be at least as high as tHigh. Some may bump its priority to 
+the highest possible priority level. Just as important as bumping 
+up the priority level of tLow, is dropping the priority level of 
+tLow at the appropriate time(s). Different systems will take 
+different approaches.
+
+When to drop the priority of tLow ...
+
+    No other tasks are blocked on any of the resources that tLow 
+    has. This may be due to timeouts or the releasing of resources.
+    No other tasks contributing to the raising the priority level 
+    of tLow are blocked on the resources that tLow has. This may 
+    be due to timeouts or the releasing of resources.
+    When there is a change in which tasks are waiting for the 
+    resource(s), drop the priority of tLow to match the priority 
+    of the highest priority level task blocked on its resource(s).
+
+Method #2 is an improvement over method #1 in that it shortens 
+the length of time that tLow has had its priority level bumped. 
+Note that its priority level stays bumped at tHigh's priority 
+level during this period.
+
+Method #3 allows the priority level of tLow to step down in 
+increments if necessary instead of in one all-or-nothing step.
+
+Different systems will implement different methods depending 
+upon what factors they consider important.
+
+1. memory footprint
+2. complexity
+3. real time responsiveness
+4. developer knowledge
+===============================================================================
+
+► What is the memory management in OS. Define kernel space and User spcae
+in Operating system.
+Sol:
+    The really simplified answer is that the kernel runs in kernel space, 
+and normal programs run in user space. User space is basically a form of 
+sand-boxing -- it restricts user programs so they can't mess with memory 
+(and other resources) owned by other programs or by the OS kernel. This 
+limits (but usually doesn't entirely eliminate) their ability to do bad 
+things like crashing the machine.
+
+The kernel is the core of the operating system. It normally has full 
+access to all memory and machine hardware (and everything else on the 
+machine. To keep the machine as stable as possible, you normally want 
+only the most trusted, well-tested code to run in kernel mode/kernel 
+space.
+
+    Kernel space and user space is the separation of the privileged 
+operating system functions and the restricted user applications. The 
+separation is necessary to prevent user applications from ransacking your 
+computer. It would be a bad thing if any old user program could start 
+writing random data to your hard drive or read memory from another user 
+program's memory space.
+
+User space programs cannot access system resources directly so access 
+is handled on the program's behalf by the operating system kernel. The 
+user space programs typically make such requests of the operating system 
+through system calls.
+
+Kernel threads, processes, stack do not mean the same thing. They are 
+analogous constructs for kernel space as their counterparts in user space.
+
+    Each process has its own 4GB of virtual memory which maps to the 
+physical memory through page tables. The virtual memory is mostly split 
+in two parts: 3 GB for the use of the process and 1 GB for the use of the 
+Kernel. Most of the variables you create lie in the first part of the 
+address space. That part is called user space. The last part is where 
+the kernel resides and is common for all the processes. This is called 
+Kernel space and most of this space is mapped to the starting locations 
+of physical memory where the kernel image is loaded at boot time.   
+
+
+===============================================================================
+► How does system call works?
+Sol:
+ Any application running on Linux may request services like :
+
+    Inter process communication
+    I/O services
+    Creating a new process
+    Accessing system hardware etc
+
+Note: The above list is not exhaustive.
+The services listed above are all handled by Linux kernel. So, any 
+application in Linux that requires any of these services has to request 
+the Linux kernel to handle the request on its behalf. The request is 
+handed over to kernel by calling corresponding system calls. System 
+calls act as an interface between application and kernel.
+
+Some examples of system calls include :
+
+    fork()
+    execve()
+    open()
+    read()
+    write() etc
+
+
+How system call works:-
+======================
+The following points explain the operation of a system call on 
+x86-32 hardware:
+
+From a programmer point of view, calling a system call is 
+quivalent to calling any normal C function.
+Inside the Linux kernel, each system call has a number associated 
+ith it.
+The kernel expects all the information like system call number, 
+the arguments to the system call etc to be present in CPU 
+registers.
+A system call first invokes a C library wrapper function which 
+does all this work of placing the information required to be 
+placed in CPU registers. The system call number is placed in the 
+register %eax.After doing the above work, the same wrapper function 
+invokes a trap instruction 'int 0x80'. This instruction switches 
+the processor mode from user mode to the kernel mode and executes
+the code kept at location 0x80.  Note : Starting with Linux kernel
+2.6 and glibc 2.3.2 a faster mechanism of using the 'sysenter' 
+instruction is followed to switch into the kernel mode.
+After the above step, now since the processor is in kernel mode, 
+the kernel calls a general trap handler function system_call() 
+to handle this trap.
+This handler function : Copies all the relevant information kept 
+in the CPU registers onto the kernel stack, Validates the system 
+call number, Uses the system call number to find the corresponding 
+system call service routine from a table(sys_call_table) of service 
+routines maintained by kernel and Calls the system call service 
+routine with the arguments passed from the user space. 
+The system call service routine that is finally called by the trap 
+handler first checks the validity of the arguments sent to it and 
+then it does the actual work requested by the application.
+Once the system call service routine is done with its processing, 
+the control is returned back to the trap handler function which 
+returns the flow back to the wrapper function in the user-mode.
+Based on the return value from the trap handler, the wrapper 
+function sets the 'errno' variable and returns -1 (in most of the 
+cases) to indicate an error.
+The value of the 'errno' variable is assigned by negating the 
+return value of the trap handler (returned to wrapper function).
+The application can use the strerror() API with 'errno' to get 
+the error information in form of human readable string.
+
+===============================================================================
+► What is a race condition? How do you detect them? How do you handle 
+them? And finally, how do you prevent them from occurring?
+Sol: A race condition occurs when two or more threads can access shared 
+data and they try to change it at the same time. Because the thread scheduling 
+algorithm can swap between threads at any time, you don't know the order in 
+which the threads will attempt to access the shared data. Therefore, the 
+result of the change in data is dependent on the thread scheduling algorithm, 
+i.e. both threads are "racing" to access/change the data.
+
+===============================================================================
+
+

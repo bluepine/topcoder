@@ -1,0 +1,23 @@
+Let A and B be two N bit numbers. You are given initial values for A and B, and you should write a program which processes three kinds of queries:
+
+set_a idx x: Set A[idx] to x, where 0 <= idx < N, where A[idx] is idx'th least significant bit of A.
+set_b idx x: Set B[idx] to x, where 0 <= idx < N.
+get_c idx: Print C[idx], where C=A+B, and 0<=idx<N+1.
+Input
+First line of input contains two integers N and Q consecutively (1 <= N <= 100000, 1<= Q <= 500000). Second line is an N-bit binary number which denotes initial value of A, and the third line is an N-bit binary number denoting initial value of B. Q lines follow, each containing a query as described above.
+
+Output
+For each query of the type get_c, output a single digit 0 or 1. Output must be placed in a single line.
+
+Sample Input
+5 5
+00000
+11111
+set_a 0 1
+get_c 5
+get_c 1
+set_b 2 0
+get_c 5
+
+Sample Output
+100

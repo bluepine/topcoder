@@ -1,0 +1,236 @@
+Link:
+    http://174.37.163.146-static.reverse.softlayer.com/ipc/ipc-interview-questions.asp
+==============================================================================
+
+►
+==============================================================================
+►
+==============================================================================
+►
+==============================================================================
+►
+==============================================================================
+►
+==============================================================================
+►
+==============================================================================
+►
+==============================================================================
+►
+==============================================================================
+►
+==============================================================================
+►
+==============================================================================
+►
+==============================================================================
+►
+==============================================================================
+►
+==============================================================================
+►
+==============================================================================
+►
+==============================================================================
+►
+==============================================================================
+►
+==============================================================================
+►
+==============================================================================
+►
+==============================================================================
+►
+==============================================================================
+►
+==============================================================================
+►
+==============================================================================
+►
+==============================================================================
+►
+==============================================================================
+► What is difference between mutex locking and semaphore?
+http://stackoverflow.com/questions/62814/difference-between-binary-semaphore-and-mutex
+http://stackoverflow.com/questions/4039899/when-should-we-use-mutex-and-when-should-we-use-semaphore
+Sol:
+http://blog.feabhas.com/2009/09/mutex-vs-semaphores-%E2%80%93-part-1-semaphores/
+http://blog.feabhas.com/2009/09/mutex-vs-semaphores-%E2%80%93-part-2-the-mutex/
+http://blog.feabhas.com/2009/10/mutex-vs-semaphores-%E2%80%93-part-3-final-part-mutual-exclusion-problems/
+
+1.    The mutex is used for protecting parts of code from running 
+concurrently, semaphores are used for one thread to signal another 
+thread to run. 
+
+2. The difference between a Mutex and a Binary-Semaphore is 
+the principle of ownership: 
+A mutex is acquired by a task and therefore must also be released 
+by the same task. This makes it possible to fix several problems 
+with binary semaphores (Accidential release, recursive deadlock 
+and priority inversion).
+
+3. Semaphore maintain the reference count. Like if the semaohore 
+is called two times it will maintiain the count value of the 
+semaphore as 2, while this is not true int he case of Mutex.
+
+Semaphore is used for singanlling pirpose and mutex is used 
+protecting purpose.
+==============================================================================
+► What is the major advantage of a hash table? 
+Sol:
+    The major advantage of a hash table is its speed. Because the 
+hash function is to take a range of key values and transform them 
+into index values in such a way that the key values are distributed 
+randomly across all the indices of a hash table.
+==============================================================================
+► What are the techniques that you use to handle the collisions 
+in hash tables?
+==============================================================================
+► In Unix OS, what is the file server?
+==============================================================================
+► What is NFS? What is its job?
+
+==============================================================================
+► What are the process states in Unix?
+Sol:
+    As a process executes it changes state according to its 
+circumstances. Unix processes have the following states:
+1. Running : The process is either running or it is ready to run .
+2. Waiting/Blocked : The process is waiting for an event or for a resource.
+3. Stopped : The process has been stopped, usually by receiving 
+             a signal.
+4. Zombie  : The process is dead but have not been removed from the 
+            process table.
+
+==============================================================================
+► What is a zombie?
+Sol:
+    When a program forks and the child finishes before the parent, 
+the kernel still keeps some of its information about the child in 
+case the parent might need it - for example, the parent may need to 
+check the child's exit status. To be able to get this information, 
+the parent calls `wait()'; In the interval between the child 
+terminating and the parent calling `wait()', the child is said to be 
+a `zombie' (If you do `ps', the child will have a `Z' in its status 
+field to indicate this.)
+
+==============================================================================
+► How can a parent and child process communicate?
+Sol:
+    using interprocess communication like:
+    1. Pipes. 
+    2. Message queue.
+    3. Shared memory.
+    4. Semaphores.
+    5. Sockets.
+    6. By creating there own globle queue.
+==============================================================================
+► How can you get/set an environment variable from a program?
+Sol:
+    Getting the value of an environment variable is done by using `getenv()'.
+    char *getenv(const char *name);
+    Setting the value of an environment variable is done by using `putenv()'.
+    int putenv(char *string);
+
+==============================================================================
+► List the system calls used for process management:
+Sol:
+    System calls Description
+1. fork() To create a new process
+2. exec() To execute a new program in a process
+3. wait() To wait until a created process completes its execution
+4. exit() To exit from a process execution
+5. getpid() To get a process identifier of the current process
+6. getppid() To get parent process identifier
+7. nice() To bias the existing priority of a process
+8. brk() To increase/decrease the data segment size of a process
+==============================================================================
+► Predict the output of the following program code 
+    main() { 
+        fork(); 
+        fork(); 
+        fork(); 
+        printf("Hello World!"); 
+    }
+Sol:
+    It will print "Hello world" 8 times.
+==============================================================================
+► Explain fork() system call.
+Sol:
+    Function Prototype:
+        #include<unistd.h>
+        pid_t fork(void)
+
+    Fork create new process by duplicating the calling process.
+Diffference bwteen child and parrent process:
+1. The child has its own unique process ID, and this PID does not match 
+   the ID of any existing process group.
+2. The child's parrent process id is same as the parent's process ID.
+3. The child does not inherit its process memory Lock.
+4. Process resource utilization are reset to zero in child.
+5. The child inherit its semaphore adjustment from its parent.
+6. The Child does not inherit record lock from its parent.
+7. The termination signal of child is always SIGCHILD
+
+==============================================================================
+► What are various IDs associated with a process?
+==============================================================================
+► Brief about the initial process sequence while the system boots up.?
+==============================================================================
+► How shared memory are accessed if we have two processors?
+==============================================================================
+► Which tool would you use to update Debian / Slackware /
+==============================================================================
+► Which distro you prefer?
+==============================================================================
+► Why do we have serial and parallel interface?
+==============================================================================
+► Which Linux distros do you have experience with ?
+==============================================================================
+► What are the Advantages and disadvantages of script?
+==============================================================================
+► What does route command do?
+==============================================================================
+► What is symbolic link in unix ?
+==============================================================================
+► Which is the fastest IPC mechanism and why ?
+==============================================================================
+► List the known facilities for interprocess communication in Linux?
+==============================================================================
+► What are the two models of interprocess communication what are the strengths and weaknesses of the two approaches?
+==============================================================================
+► Explain difference between IPC mechanisms?
+==============================================================================
+► What is IPC? What are the various schemes available?
+==============================================================================
+► How shared memory are accessed if we have two processors
+==============================================================================
+► Which distro you prefer?
+==============================================================================
+► Why do we have serial and parallel interface?
+==============================================================================
+► Which Linux distros do you have experience with ?
+==============================================================================
+► What are the Advantages and disadvantages of script?
+==============================================================================
+► What does ?route? command do?
+==============================================================================
+► What is symbolic link in unix ?
+Sol:
+A symbolic link, also termed a soft link, is a special kind of 
+file that points to another file, much like a shortcut in Windows 
+or a Macintosh alias. Unlike a hard link, a symbolic link does 
+not contain the data in the target file. It simply points to 
+another entry somewhere in the file system. This difference 
+gives symbolic links certain qualities that hard links do not 
+have, such as the ability to link to directories, or to files on 
+remote computers networked through NFS. Also, when you delete a 
+target file, symbolic links to that file become unusable, whereas 
+hard links preserve the contents of the file.
+==============================================================================
+► Explain difference between IPC
+==============================================================================
+► What are the system calls used for process management?
+==============================================================================
+► What is IPC ?
+==============================================================================
