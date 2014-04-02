@@ -1,9 +1,9 @@
+queue, vector, stack in C
 practice quicksort, heapsort and mergesort
 shortest path algorithm: Djikstra's Algorithm
 non-deterministic polynomial:  traveling salesman problem
 hash algorithms
 median algorithm
 Ford-Fulkerson algorithm 
-BFS
-queue
+BFS: stack size required by BFS?
 chess
